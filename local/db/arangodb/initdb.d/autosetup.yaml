@@ -1,0 +1,19 @@
+users:
+- username: pool-manager
+  password: pool-manager
+databases:
+- name: PoolManager
+  collections:
+  - name: UnsentMessages
+    type: document
+    indexes: []
+  - name: Pools
+    type: document
+    indexes: []
+  - name: PoolOperations
+    type: document
+    indexes: []
+grants:
+- username: pool-manager
+  database: PoolManager
+  permissions: rw
