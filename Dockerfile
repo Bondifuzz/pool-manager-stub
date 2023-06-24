@@ -44,7 +44,7 @@ ENV BUILD_DATE=$BUILD_DATE
 ENV GIT_BRANCH=$GIT_BRANCH
 
 COPY --from=base /opt/venv /opt/venv
-COPY logging.yaml pool.yaml index.html ./
+COPY logging.yaml index.html ./
 COPY pool_manager ./pool_manager
 
 ENV PATH="/opt/venv/bin:$PATH"
