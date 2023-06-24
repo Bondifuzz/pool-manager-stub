@@ -7,10 +7,7 @@ from typing import Any, Dict, Optional
 
 from pydantic import AnyHttpUrl, BaseModel
 from pydantic import BaseSettings as _BaseSettings
-from pydantic import Field, NonNegativeInt, PositiveInt, root_validator, validator
-
-from pool_manager.app.util.datetime import duration_in_seconds
-from pool_manager.app.util.resources import CpuResources, RamResources
+from pydantic import Field, root_validator
 
 # fmt: off
 with suppress(ModuleNotFoundError):
@@ -75,77 +72,10 @@ class EnvironmentSettings(BaseSettings):
         return data
 
 
-class PoolOperationDelaySettings(BaseSettings):
-    create: NonNegativeInt
-    update: NonNegativeInt
-    delete: NonNegativeInt
-
-    class Config:
-        env_prefix = "POOL_OPERATION_DELAY_"
-
-    @validator("create", "update", "delete", pre=True)
-    def validate_delay(value: Optional[str]):
-        return duration_in_seconds(value or "")
-
-
-class PollIntervalSettings(BaseSettings):
-    yc_poller: PositiveInt
-    scheduled_ops: PositiveInt
-    expired_pools: PositiveInt
-
-    class Config:
-        env_prefix = "POLL_INTERVAL_"
-
-    @validator("yc_poller", "scheduled_ops", "expired_pools", pre=True)
-    def validate_delay(value: Optional[str]):
-        return duration_in_seconds(value or "")
-
-
-class PoolNodeSettings(BaseSettings):
-    diverted_cpu: PositiveInt
-    diverted_ram: PositiveInt
-
-    class Config:
-        env_prefix = "POOL_NODE_"
-
-    @validator("diverted_cpu", pre=True)
-    def validate_cpu(value: Optional[str]):
-        return CpuResources.from_string(value or "")
-
-    @validator("diverted_ram", pre=True)
-    def validate_ram(value: Optional[str]):
-        return RamResources.from_string(value or "")
-
-
-class YCAPIEndpointSettings(BaseSettings):
-
-    operations: AnyHttpUrl
-    node_groups: AnyHttpUrl
-    auth: AnyHttpUrl
-
-    class Config:
-        env_prefix = "YC_API_URL_"
-
-
-class YandexCloudAPISettings(BaseSettings):
-
-    endpoints: YCAPIEndpointSettings
-    service_account_id: str
-    public_key_id: str
-    private_key_filepath: str
-
-    class Config:
-        env_prefix = "YC_API_"
-
-
 class AppSettings(BaseModel):
     database: DatabaseSettings
     collections: CollectionSettings
     environment: EnvironmentSettings
-    poll_interval: PollIntervalSettings
-    operation_delay: PoolOperationDelaySettings
-    yc_api: YandexCloudAPISettings
-    pool_node: PoolNodeSettings
 
 
 _app_settings = None
@@ -159,11 +89,7 @@ def get_app_settings() -> AppSettings:
         _app_settings = AppSettings(
             database=DatabaseSettings(),
             collections=CollectionSettings(),
-            yc_api=YandexCloudAPISettings(endpoints=YCAPIEndpointSettings()),
-            operation_delay=PoolOperationDelaySettings(),
-            poll_interval=PollIntervalSettings(),
             environment=EnvironmentSettings(),
-            pool_node=PoolNodeSettings(),
         )
 
     return _app_settings

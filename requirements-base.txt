@@ -1,6 +1,5 @@
 kubernetes-asyncio==12.1.0
 prometheus-client==0.11.0
-# cryptography==37.0.4
 aioarangodb==0.1.2
 aiohttp==3.8.1
 coloredlogs==15.0.1
@@ -10,4 +9,3 @@ fastapi==0.73.0
 uvicorn==0.17.4
 pydantic==1.8.2
 devtools==0.8.0
-# PyJWT==2.4.0
