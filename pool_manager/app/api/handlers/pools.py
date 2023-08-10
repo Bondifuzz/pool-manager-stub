@@ -481,6 +481,8 @@ async def pool_event_stream(
     async def event_publisher():
         while True:  # No pool events in this version
             await delay()
+            if False:
+                yield None
 
     log_operation_success(operation)
     return EventSourceResponse(event_publisher())
