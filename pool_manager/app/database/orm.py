@@ -28,6 +28,8 @@ class ORMPoolStatus(str, Enum):
 
 class ORMNodeGroup(BaseModel):
     node_count: int
+    node_cpu: int
+    node_ram: int
 
 
 class ORMOperationType(str, Enum):
